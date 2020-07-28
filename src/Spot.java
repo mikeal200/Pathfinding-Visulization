@@ -3,12 +3,12 @@ import java.awt.*;
 
 public class Spot {
 
-    double f, g, h;
-    int x, y;
-    ArrayList<Spot> neighbors;
-    Spot previous;
-    int width = 800 / Main.cols;
-    int height = 600 / Main.rows;
+    public double f, g, h;
+    public int x, y;
+    public ArrayList<Spot> neighbors;
+    public Spot previous;
+    private int width = 800 / Main.cols;
+    private int height = 600 / Main.rows;
 
     public Spot(int i, int j) {
         this.x = i;

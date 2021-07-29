@@ -5,12 +5,13 @@ import javax.swing.*;
 
 public class Main extends JPanel {
 
-	public static int cols = 100;
-	public static int rows = 100;
+	public static int cols = 25;
+	public static int rows = 25;
 	public static Spot[][] grid = new Spot[cols][rows];
 	public static ArrayList<Spot> openSet = new ArrayList<>();
 	public static ArrayList<Spot> closedSet = new ArrayList<>();
 	public static ArrayList<Spot> path;
+	public static ArrayList<Spot> walls = new ArrayList<>();;
 	private static boolean done = false;
 
 	public static void main(String[] args) {
@@ -35,8 +36,8 @@ public class Main extends JPanel {
 			}
 		}
 
-		Spot start = grid[0][0];
-		Spot end = grid[20][90];
+		Spot start = grid[1][1];
+		Spot end = grid[3][7];
 
 		//Adding starting spot to openSet
 		openSet.add(start);
@@ -45,8 +46,16 @@ public class Main extends JPanel {
 	public void paintComponent (Graphics g) {
 		Spot current = null;
 		super.paintComponent(g);
-		Spot start = grid[0][0];
-		Spot end = grid[20][90];
+		Spot start = grid[1][1];
+		Spot end = grid[3][7];
+
+		walls.add(grid[2][2]);
+		walls.add(grid[2][1]);
+		walls.add(grid[2][3]);
+		walls.add(grid[2][4]);
+		walls.add(grid[2][5]);
+		walls.add(grid[2][6]);
+		walls.add(grid[2][7]);
 
 		for (int i = 0; i < cols; i++) {
 			for (int j = 0; j < rows; j++) {
@@ -64,7 +73,7 @@ public class Main extends JPanel {
 			}
 			current = openSet.get(lowestCost);
 
-			if(current.getX() == end.getX() && current.getY() == end.getY()) {
+			if(current.getX() == end.getX() && current.getY() == end.getY()) {			
 				System.out.println("done");
 				done = true;
 			}
@@ -73,9 +82,12 @@ public class Main extends JPanel {
 			closedSet.add(current);
 
 			ArrayList<Spot> neighbors = current.neighbors;
-			for(int i = 0; i < neighbors.size(); i++){
+			for(int i = 0; i < neighbors.size(); i++) {
 				Spot neighbor = neighbors.get(i);
-				if(!closedSet.contains(neighbor)){
+				if(walls.contains(neighbor)){
+					continue;
+				}
+				else if(!closedSet.contains(neighbor)){
 					double tempG = current.g + 1;
 					if(openSet.contains(neighbor)) {
 						if(tempG < neighbor.g) {
@@ -91,6 +103,10 @@ public class Main extends JPanel {
 					neighbor.f = neighbor.g + neighbor.h;
 				}
 			}
+		}
+
+		for (int i = 0; i < walls.size(); i++) {
+			walls.get(i).draw(Color.BLACK, g);
 		}
 
 		for (int i = 0; i < closedSet.size(); i++) {
@@ -115,7 +131,6 @@ public class Main extends JPanel {
 			}
 		}
 
-
 		try {
 			Thread.sleep(50);
 		} catch (InterruptedException e) {
@@ -126,6 +141,9 @@ public class Main extends JPanel {
 		else{
 			repaint();
 		}
+
+		start.draw(Color.PINK, g);
+		end.draw(Color.PINK, g);
 	}
 
 	public static void removeSpot(Spot elem) {

@@ -17,6 +17,7 @@ public class Spot {
         this.g = 0;
         this.h = 0;
         this.neighbors = new ArrayList<>();
+        this.wall = false;
     }
 
     public void draw(Color color, Graphics g) {
@@ -42,8 +43,6 @@ public class Spot {
     }
 
     public void addNeighbors(Spot[][] grid) {
-        //int i = this.x;
-        //int j = this.y;
         if(x < Main.cols - 1) {
             this.neighbors.add(grid[this.x + 1][this.y]);
         }

@@ -1,11 +1,11 @@
 # Pathfinding-Visulization
 
-# Demo
+## Demos
 ![Pathfinding-Visulization](demo/demo.gif)
 
 ![Pathfinding-Visulization](demo/demo2.gif)
 
-# Todo 
+## Todo 
 - [ ] add other search algorithms  
 - [x] make grid
 - [x] user defined start

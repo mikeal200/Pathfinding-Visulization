@@ -25,6 +25,7 @@ public class Main extends JPanel {
 	private static boolean wallB = false;
 	private static int clicks = 0;
 	private static JButton goButton;
+	private static boolean chosen = false;
 
 	public static void main(String[] args) {
 		Main mainPanel  = new Main();
@@ -51,54 +52,47 @@ public class Main extends JPanel {
 				grid[i][j].addNeighbors(grid);
 			}
 		}
-
-		Spot start = grid[1][1];
-		Spot end = grid[3][7];
-
-		//Adding starting spot to openSet
-		openSet.add(start);
 	}
 
 	//Create button and action listener:
     public static JButton addNewButton(){
         JButton button = new JButton("Next");
-        button.setBounds(700, 550, 60, 40);
+		button.setBounds(700, 550, 60, 40);
+		
         button.addActionListener(new java.awt.event.ActionListener(){
-        @Override
-        public void actionPerformed(java.awt.event.ActionEvent evt){
-            buttonAction(evt);
-        }
-        });
+        	@Override
+        	public void actionPerformed(java.awt.event.ActionEvent evt){
+            	buttonAction(evt);
+        	}
+		});
+		
         return button;
 	}
 	
-	//Action fer each button:
+	//Action for each button:
     public static void buttonAction(ActionEvent e) {
 		goButton.setVisible(false);
 		clicks++;
+		
 		if(clicks == 1) { 
 			startB = true;
 			endB = true;
+			//Adding starting spot to openSet
+			openSet.add(start);
 		}
 		if(clicks == 2) {
 			endB = false;
 			wallB = true;
 		}
-		if(clicks == 3) wallB = false;
-    }
-
+		if(clicks == 3) {
+			wallB = false;
+			chosen = true;
+		}
+	}
+	
 	public void paintComponent (Graphics g) {
 		Spot current = null;
-		boolean choosen = false;
 		super.paintComponent(g);
-
-		/*walls.add(grid[2][2]);
-		walls.add(grid[2][1]);
-		walls.add(grid[2][3]);
-		walls.add(grid[2][4]);
-		walls.add(grid[2][5]);
-		walls.add(grid[2][6]);
-		walls.add(grid[2][7]);*/
 
 		for (int i = 0; i < cols; i++) {
 			for (int j = 0; j < rows; j++) {
@@ -106,22 +100,20 @@ public class Main extends JPanel {
 			}
 		}
 
-		//write something that ends this nonsense
-
-		if(start != null) {
-			start.draw(Color.PINK, g);
-			//goButton.setVisible(false);
-		}
-		if(end != null) {
-			end.draw(Color.PINK, g);
-		}
-		if(walls.size() > 0) {
-			for (int i = 0; i < walls.size(); i++) {
-				walls.get(i).draw(Color.BLACK, g);
+		if(!chosen) {
+			if(start != null) {
+				start.draw(Color.PINK, g);
+			}
+			if(end != null) {
+				end.draw(Color.PINK, g);
+			}
+			if(walls.size() > 0) {
+				for (int i = 0; i < walls.size(); i++) {
+					walls.get(i).draw(Color.BLACK, g);
+				}
 			}
 		}
-
-		if(choosen) {
+		else if(chosen) {
 			if(openSet.size() > 0) {
 				int lowestCost = 0;
 
@@ -208,6 +200,7 @@ public class Main extends JPanel {
 
 	public static void removeSpot(Spot elem) {
 		Iterator<Spot> iter = openSet.iterator();
+
 		while(iter.hasNext()) {
 			Spot s = iter.next();
 			if(s.getX() == elem.getX() && s.getY() == elem.getY()) {
@@ -228,18 +221,25 @@ public class Main extends JPanel {
 				int y=e.getY();
 				col = x / tileWidth;
 				row = y / tileHeight;
-				if(wallB) {
-					walls.add(grid[col][row]);
-					goButton.setVisible(true);
+
+				if(e.getButton() == MouseEvent.BUTTON1) {
+					if(wallB) {
+						walls.add(grid[col][row]);
+						goButton.setVisible(true);
+					}
+					if(endB) {
+						end = grid[col][row];
+						goButton.setVisible(true);
+					}
+					if(!startB) {
+						start = grid[col][row];
+						goButton.setVisible(true);
+					}
 				}
-				if(endB) {
-					end = grid[col][row];
-					goButton.setVisible(true);
+				if(e.getButton() == MouseEvent.BUTTON3) {
+					walls.remove(grid[col][row]);
 				}
-				if(!startB) {
-					start = grid[col][row];
-					goButton.setVisible(true);
-				}
+
 				repaint();
 			}
 		});

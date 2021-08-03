@@ -24,16 +24,17 @@ public class Main extends JPanel {
 	private static boolean endB = false;
 	private static boolean wallB = false;
 	private static int clicks = 0;
+	private static JButton goButton;
 
 	public static void main(String[] args) {
 		Main mainPanel  = new Main();
 		JFrame frame = new JFrame("Pathfinder");
-		JButton goButton = addNewButton();
-		//goButton.setBounds(750, 570, 60, 40);
+		goButton = addNewButton();
 		frame.getContentPane().add(new Main());
 		frame.setSize(816, 639);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.add(goButton);
+		goButton.setVisible(false);
 		frame.add(mainPanel);
 		frame.setVisible(true);
 
@@ -73,7 +74,17 @@ public class Main extends JPanel {
 	
 	//Action fer each button:
     public static void buttonAction(ActionEvent e) {
-		System.out.println("button worked");
+		goButton.setVisible(false);
+		clicks++;
+		if(clicks == 1) { 
+			startB = true;
+			endB = true;
+		}
+		if(clicks == 2) {
+			endB = false;
+			wallB = true;
+		}
+		if(clicks == 3) wallB = false;
     }
 
 	public void paintComponent (Graphics g) {
@@ -99,6 +110,7 @@ public class Main extends JPanel {
 
 		if(start != null) {
 			start.draw(Color.PINK, g);
+			//goButton.setVisible(false);
 		}
 		if(end != null) {
 			end.draw(Color.PINK, g);
@@ -218,16 +230,15 @@ public class Main extends JPanel {
 				row = y / tileHeight;
 				if(wallB) {
 					walls.add(grid[col][row]);
+					goButton.setVisible(true);
 				}
 				if(endB) {
 					end = grid[col][row];
-					endB = false;
-					wallB = true;
+					goButton.setVisible(true);
 				}
-				if(clicks == 0) {
-					endB = true;
-					clicks++;
+				if(!startB) {
 					start = grid[col][row];
+					goButton.setVisible(true);
 				}
 				repaint();
 			}

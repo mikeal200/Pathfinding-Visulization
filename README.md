@@ -11,7 +11,7 @@
 - [x] user defined start
 - [x] user defined end 
 - [x] user defined walls
-- [ ] removable walls
+- [x] removable walls
 - [ ] diagonal search
 - [ ] restart button
 - [ ] clear walls button

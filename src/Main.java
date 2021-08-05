@@ -124,13 +124,17 @@ public class Main extends JPanel {
 				}
 				current = openSet.get(lowestCost);
 
+				//check if end of path is found
+				//make a seperate method to check
 				if(current.getX() == end.getX() && current.getY() == end.getY()) {			
 					System.out.println("done");
 					done = true;
 				}
 
-				removeSpot(current);
+				openSet.remove(current);
 				closedSet.add(current);
+
+				diagonalWallCheck(current);
 
 				ArrayList<Spot> neighbors = current.neighbors;
 				for(int i = 0; i < neighbors.size(); i++) {
@@ -198,20 +202,26 @@ public class Main extends JPanel {
 		}
 	}
 
-	public static void removeSpot(Spot elem) {
-		Iterator<Spot> iter = openSet.iterator();
-
-		while(iter.hasNext()) {
-			Spot s = iter.next();
-			if(s.getX() == elem.getX() && s.getY() == elem.getY()) {
-				iter.remove();
-			}
-		}
+	public static double heurisitic(Spot a, Spot b) {
+		final double D = 1;
+		final double D2 = 1.414;
+		double dx = Math.abs(a.x - b.x); 
+		double dy = Math.abs(a.y - b.y);
+		return D * Math.max(dx, dy) + (D2 - D) * Math.min(dx, dy);
 	}
 
-	public static double heurisitic(Spot a, Spot b) {
-		double d = Math.abs(a.x - b.x) + Math.abs(a.y - b.y);
-		return d;
+	public static void diagonalWallCheck(Spot current) {
+		Spot xR = grid[current.getX() + 1][current.getY()];
+		Spot xL = grid[current.getX() - 1][current.getY()];
+		Spot yD = grid[current.getX()][current.getY() + 1];
+		Spot yU = grid[current.getX()][current.getY() - 1];
+
+		if(walls.contains(xR) && walls.contains(yD) && current != end) {
+			current.removeNeighbor(grid[current.x+1][current.y+1]);
+		}
+		else if(walls.contains(xL) && walls.contains(yU) && current != end) {
+			current.removeNeighbor(grid[current.x-1][current.y-1]);
+		}
 	}
 
 	public Main() {

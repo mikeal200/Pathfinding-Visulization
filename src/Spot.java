@@ -41,6 +41,10 @@ public class Spot {
         return y;
     }
 
+    public void removeNeighbor(Spot current){
+        this.neighbors.remove(current);
+    }
+
     public void addNeighbors(Spot[][] grid) {
         if(x < Main.cols - 1) {
             this.neighbors.add(grid[this.x + 1][this.y]);
@@ -54,5 +58,11 @@ public class Spot {
         if(y > 0) {
             this.neighbors.add(grid[this.x][this.y - 1]);
         }
+        if(x < Main.cols - 1 && y < Main.rows - 1) {
+            this.neighbors.add(grid[this.x + 1][this.y + 1]);
+        }
+        /*if(x > 0 && y > 0) {
+            this.neighbors.add(grid[this.x - 1][this.y - 1]);
+        }*/
     }
 }

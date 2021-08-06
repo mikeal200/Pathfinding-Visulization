@@ -12,7 +12,7 @@
 - [x] user defined end 
 - [x] user defined walls
 - [x] removable walls
-- [ ] diagonal search
+- [x] diagonal search
 - [ ] restart button
 - [ ] clear walls button
 - [ ] pause button

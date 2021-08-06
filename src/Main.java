@@ -1,5 +1,6 @@
 import java.awt.*;
 import java.awt.event.*;
+import java.lang.module.ModuleDescriptor.Opens;
 import java.util.ArrayList;
 import java.util.Iterator;
 import javax.swing.*;
@@ -127,7 +128,7 @@ public class Main extends JPanel {
 				//check if end of path is found
 				//make a seperate method to check
 				if(current.getX() == end.getX() && current.getY() == end.getY()) {			
-					System.out.println("done");
+					System.out.println("done: " + path);
 					done = true;
 				}
 
@@ -139,24 +140,33 @@ public class Main extends JPanel {
 				ArrayList<Spot> neighbors = current.neighbors;
 				for(int i = 0; i < neighbors.size(); i++) {
 					Spot neighbor = neighbors.get(i);
+					double tempG = current.g + 1;
+
 					if(walls.contains(neighbor)){
 						continue;
 					}
-					else if(!closedSet.contains(neighbor)){
-						double tempG = current.g + 1;
-						if(openSet.contains(neighbor)) {
-							if(tempG < neighbor.g) {
-								neighbor.g = tempG;
+
+					if(!openSet.contains(neighbor) && !closedSet.contains(neighbor)) {
+						neighbor.previous = current;
+						neighbor.g = tempG;
+						neighbor.f = neighbor.g + heurisitic(neighbor, end);
+						openSet.add(neighbor);
+					}
+					else {
+						if(tempG < neighbor.g) {
+							neighbor.previous = current;
+							neighbor.g = tempG;
+							neighbor.f = neighbor.g + heurisitic(neighbor, end);
+
+							if(closedSet.contains(neighbor)) {
+								closedSet.remove(neighbor);
+								openSet.add(neighbor);
 							}
 						}
-						else {
-							neighbor.g = tempG;
-							openSet.add(neighbor);
-						}
-						neighbor.previous = current;
-						neighbor.h = heurisitic(neighbor, end);
-						neighbor.f = neighbor.g + neighbor.h;
 					}
+
+					openSet.remove(current);
+					closedSet.add(current);
 				}
 			}
 
@@ -192,7 +202,8 @@ public class Main extends JPanel {
 				e.printStackTrace();
 			}
 
-			if(done){}
+			if(done){
+			}
 			else{
 				repaint();
 			}
@@ -211,16 +222,34 @@ public class Main extends JPanel {
 	}
 
 	public static void diagonalWallCheck(Spot current) {
-		Spot xR = grid[current.getX() + 1][current.getY()];
-		Spot xL = grid[current.getX() - 1][current.getY()];
-		Spot yD = grid[current.getX()][current.getY() + 1];
-		Spot yU = grid[current.getX()][current.getY() - 1];
+		int x = current.getX();
+		int y = current.getY();
+		Spot xR = null, xL = null, yD = null, yU = null;
 
-		if(walls.contains(xR) && walls.contains(yD) && current != end) {
-			current.removeNeighbor(grid[current.x+1][current.y+1]);
+		if(x < cols - 1) {
+			xR = grid[current.getX() + 1][current.getY()];
 		}
-		else if(walls.contains(xL) && walls.contains(yU) && current != end) {
-			current.removeNeighbor(grid[current.x-1][current.y-1]);
+		if(x > 0) {
+			xL = grid[current.getX() - 1][current.getY()];
+		}
+		if(y < rows - 1) {
+			yD = grid[current.getX()][current.getY() + 1];
+		}
+		if(y > 0) {
+			yU = grid[current.getX()][current.getY() - 1];
+		}
+		
+		if(walls.contains(xR) && walls.contains(yD)) {
+			current.removeNeighbor(grid[current.getX() + 1][current.getY() + 1]);
+		}
+		if(walls.contains(xL) && walls.contains(yU)) {
+			current.removeNeighbor(grid[current.getX() - 1][current.getY() - 1]);
+		}
+		if(walls.contains(xR) && walls.contains(yU)) {
+			current.removeNeighbor(grid[current.getX() + 1][current.getY() - 1]);
+		}
+		if(walls.contains(xL) && walls.contains(yD)) {
+			current.removeNeighbor(grid[current.getX() - 1][current.getY() + 1]);
 		}
 	}
 

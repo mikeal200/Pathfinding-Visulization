@@ -61,8 +61,14 @@ public class Spot {
         if(x < Main.cols - 1 && y < Main.rows - 1) {
             this.neighbors.add(grid[this.x + 1][this.y + 1]);
         }
-        /*if(x > 0 && y > 0) {
+        if(x > 0 && y > 0) {
             this.neighbors.add(grid[this.x - 1][this.y - 1]);
-        }*/
+        }
+        if(x > 0 && y < Main.rows - 1) {
+            this.neighbors.add(grid[this.x - 1][this.y + 1]);
+        }
+        if(x < Main.cols - 1 && y > 0) {
+            this.neighbors.add(grid[this.x + 1][this.y - 1]);
+        }
     }
 }

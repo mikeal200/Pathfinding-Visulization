@@ -273,25 +273,26 @@ public class Main extends JPanel {
 				col = x / tileWidth;
 				row = y / tileHeight;
 
-				if(e.getButton() == MouseEvent.BUTTON1) {
-					if(wallB) {
-						walls.add(grid[col][row]);
-						goButton.setVisible(true);
+				if(!done) {
+					if(e.getButton() == MouseEvent.BUTTON1) {
+						if(wallB) {
+							walls.add(grid[col][row]);
+							goButton.setVisible(true);
+						}
+						if(endB) {
+							end = grid[col][row];
+							goButton.setVisible(true);
+						}
+						if(!startB) {
+							start = grid[col][row];
+							goButton.setVisible(true);
+						}
 					}
-					if(endB) {
-						end = grid[col][row];
-						goButton.setVisible(true);
+					if(e.getButton() == MouseEvent.BUTTON3) {
+						walls.remove(grid[col][row]);
 					}
-					if(!startB) {
-						start = grid[col][row];
-						goButton.setVisible(true);
-					}
+					repaint();
 				}
-				if(e.getButton() == MouseEvent.BUTTON3) {
-					walls.remove(grid[col][row]);
-				}
-
-				repaint();
 			}
 		});
 	}

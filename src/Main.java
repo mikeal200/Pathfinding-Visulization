@@ -1,8 +1,6 @@
 import java.awt.*;
 import java.awt.event.*;
-import java.lang.module.ModuleDescriptor.Opens;
 import java.util.ArrayList;
-import java.util.Iterator;
 import javax.swing.*;
 
 public class Main extends JPanel {
@@ -30,14 +28,28 @@ public class Main extends JPanel {
 
 	public static void main(String[] args) {
 		Main mainPanel  = new Main();
+		JPanel container = new JPanel();
+		JPanel panel1 = new JPanel();
 		JFrame frame = new JFrame("Pathfinder");
+
 		goButton = addNewButton();
-		frame.getContentPane().add(new Main());
-		frame.setSize(816, 639);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.add(goButton);
 		goButton.setVisible(false);
-		frame.add(mainPanel);
+
+		panel1.setPreferredSize(new Dimension(139, 639));
+		//panel1.setLayout(new GridLayout(4, 1));
+		panel1.setBorder(BorderFactory.createTitledBorder("Controls"));
+		panel1.add(goButton);
+
+		mainPanel.setPreferredSize(new Dimension(829, 639));
+
+		container.setLayout(new BoxLayout(container, BoxLayout.X_AXIS));
+		container.add(panel1);
+		container.add(mainPanel);
+
+		frame.getContentPane().add(new Main());
+		frame.setSize(950, 639);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.add(container);
 		frame.setVisible(true);
 
 		//Creating spots
@@ -58,7 +70,7 @@ public class Main extends JPanel {
 	//Create button and action listener:
     public static JButton addNewButton(){
         JButton button = new JButton("Next");
-		button.setBounds(700, 550, 60, 40);
+		button.setBounds(0, 0, 60, 40);
 		
         button.addActionListener(new java.awt.event.ActionListener(){
         	@Override

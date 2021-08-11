@@ -22,7 +22,6 @@ public class Main extends JPanel {
 	private static boolean startB = false;
 	private static boolean endB = false;
 	private static boolean wallB = false;
-	private static int clicks = 0;
 	private static JButton goButton;
 	private static boolean chosen = false;
 	private static Main mainPanel  = new Main();
@@ -84,22 +83,25 @@ public class Main extends JPanel {
 	
 	//Action for each button:
     public static void buttonAction(ActionEvent e) {
-		clicks++;
 		
-		if(clicks == 1) { 
-			startB = true;
-			endB = true;
-			//Adding starting spot to openSet
-			openSet.add(start);
-		}
-		if(clicks == 2) {
-			endB = false;
-			wallB = true;
-		}
-		if(clicks == 3) {
-			wallB = false;
-			chosen = true;
-			mainPanel.repaint();
+		if(!done) {
+			if(start != null && end == null) { 
+				startB = true;
+				endB = true;
+				//clears openset so starting node is the only node
+				openSet.clear();
+				//Adding starting spot to openSet
+				openSet.add(start);
+			}
+			if(start != null && end != null && !wallB) {
+				endB = false;
+				wallB = true;
+			}
+			else if(wallB) {
+				wallB = false;
+				chosen = true;
+				mainPanel.repaint();
+			}
 		}
 	}
 	
@@ -265,31 +267,42 @@ public class Main extends JPanel {
 		}
 	}
 
+	public void draw(MouseEvent e) {
+		int x=e.getX();
+		int y=e.getY();
+		col = x / tileWidth;
+		row = y / tileHeight;
+
+		if(!done) {
+			if(SwingUtilities.isLeftMouseButton(e)) {
+				if(wallB) {
+					if(!walls.contains(grid[col][row])) {
+						walls.add(grid[col][row]);
+					}
+				}
+				if(endB) {
+					end = grid[col][row];
+				}
+				if(!startB) {
+					start = grid[col][row];
+				}
+			}
+			if(SwingUtilities.isRightMouseButton(e)) {
+				walls.remove(grid[col][row]);
+			}
+			repaint();
+		}
+	}
+
 	public Main() {
 		addMouseListener(new MouseAdapter() {
 			public void mousePressed(MouseEvent e) {
-				int x=e.getX();
-				int y=e.getY();
-				col = x / tileWidth;
-				row = y / tileHeight;
-
-				if(!done) {
-					if(e.getButton() == MouseEvent.BUTTON1) {
-						if(wallB) {
-							walls.add(grid[col][row]);
-						}
-						if(endB) {
-							end = grid[col][row];
-						}
-						if(!startB) {
-							start = grid[col][row];
-						}
-					}
-					if(e.getButton() == MouseEvent.BUTTON3) {
-						walls.remove(grid[col][row]);
-					}
-					repaint();
-				}
+				draw(e);
+			}
+		});
+		addMouseMotionListener(new MouseAdapter() {
+			public void mouseDragged(MouseEvent e) {
+				draw(e);
 			}
 		});
 	}

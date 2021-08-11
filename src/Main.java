@@ -25,15 +25,15 @@ public class Main extends JPanel {
 	private static int clicks = 0;
 	private static JButton goButton;
 	private static boolean chosen = false;
+	private static Main mainPanel  = new Main();
 
 	public static void main(String[] args) {
-		Main mainPanel  = new Main();
 		JPanel container = new JPanel();
 		JPanel panel1 = new JPanel();
 		JFrame frame = new JFrame("Pathfinder");
 
 		goButton = addNewButton();
-		goButton.setVisible(false);
+		goButton.setVisible(true);
 
 		panel1.setPreferredSize(new Dimension(139, 639));
 		//panel1.setLayout(new GridLayout(4, 1));
@@ -84,7 +84,6 @@ public class Main extends JPanel {
 	
 	//Action for each button:
     public static void buttonAction(ActionEvent e) {
-		goButton.setVisible(false);
 		clicks++;
 		
 		if(clicks == 1) { 
@@ -100,6 +99,7 @@ public class Main extends JPanel {
 		if(clicks == 3) {
 			wallB = false;
 			chosen = true;
+			mainPanel.repaint();
 		}
 	}
 	
@@ -277,15 +277,12 @@ public class Main extends JPanel {
 					if(e.getButton() == MouseEvent.BUTTON1) {
 						if(wallB) {
 							walls.add(grid[col][row]);
-							goButton.setVisible(true);
 						}
 						if(endB) {
 							end = grid[col][row];
-							goButton.setVisible(true);
 						}
 						if(!startB) {
 							start = grid[col][row];
-							goButton.setVisible(true);
 						}
 					}
 					if(e.getButton() == MouseEvent.BUTTON3) {

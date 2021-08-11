@@ -3,7 +3,7 @@ import java.awt.event.*;
 import java.util.ArrayList;
 import javax.swing.*;
 
-public class Main extends JPanel {
+public class Main extends JPanel implements Runnable {
 
 	public static int cols = 25;
 	public static int rows = 25;
@@ -22,22 +22,28 @@ public class Main extends JPanel {
 	private static boolean startB = false;
 	private static boolean endB = false;
 	private static boolean wallB = false;
-	private static JButton goButton;
+	private static JButton nextButton, pauseButton;
 	private static boolean chosen = false;
 	private static Main mainPanel  = new Main();
+	private static Thread thread = new Thread(mainPanel);
 
 	public static void main(String[] args) {
+		thread.start();
 		JPanel container = new JPanel();
 		JPanel panel1 = new JPanel();
 		JFrame frame = new JFrame("Pathfinder");
 
-		goButton = addNewButton();
-		goButton.setVisible(true);
+		pauseButton = addNewButton("Pause");
+		pauseButton.setVisible(true);
+
+		nextButton = addNewButton("Next");
+		nextButton.setVisible(true);
 
 		panel1.setPreferredSize(new Dimension(139, 639));
 		//panel1.setLayout(new GridLayout(4, 1));
 		panel1.setBorder(BorderFactory.createTitledBorder("Controls"));
-		panel1.add(goButton);
+		panel1.add(nextButton);
+		panel1.add(pauseButton);
 
 		mainPanel.setPreferredSize(new Dimension(829, 639));
 
@@ -67,22 +73,42 @@ public class Main extends JPanel {
 	}
 
 	//Create button and action listener:
-    public static JButton addNewButton(){
-        JButton button = new JButton("Next");
+    public static JButton addNewButton(String bName){
+        JButton button = new JButton(bName);
 		button.setBounds(0, 0, 60, 40);
 		
         button.addActionListener(new java.awt.event.ActionListener(){
         	@Override
         	public void actionPerformed(java.awt.event.ActionEvent evt){
-            	buttonAction(evt);
+				if(bName.equals("Next")) {
+					nextAction(evt);
+				}
+				else if(bName.equals("Pause")) {
+					pauseAction(evt);
+				}
         	}
 		});
 		
         return button;
 	}
+
+	//Action for pause button:
+    public static void pauseAction(ActionEvent e) {
+		
+		if(!done) {
+			try{
+				Thread.sleep(5000);
+				//thread.suspend();
+				//thread.wait();
+			}
+			catch(Exception ex) {
+
+			}
+		}
+	}
 	
-	//Action for each button:
-    public static void buttonAction(ActionEvent e) {
+	//Action for next button:
+    public static void nextAction(ActionEvent e) {
 		
 		if(!done) {
 			if(start != null && end == null) { 
@@ -100,14 +126,19 @@ public class Main extends JPanel {
 			else if(wallB) {
 				wallB = false;
 				chosen = true;
-				mainPanel.repaint();
+				mainPanel.run();
 			}
 		}
+	}
+
+	public void run() {
+		repaint();
 	}
 	
 	public void paintComponent (Graphics g) {
 		Spot current = null;
 		super.paintComponent(g);
+		
 
 		for (int i = 0; i < cols; i++) {
 			for (int j = 0; j < rows; j++) {
@@ -219,7 +250,7 @@ public class Main extends JPanel {
 			if(done){
 			}
 			else{
-				repaint();
+				run();
 			}
 
 			start.draw(Color.PINK, g);
@@ -276,12 +307,18 @@ public class Main extends JPanel {
 		if(!done) {
 			if(SwingUtilities.isLeftMouseButton(e)) {
 				if(wallB) {
-					if(!walls.contains(grid[col][row])) {
+					if(!walls.contains(grid[col][row]) 
+						&& start != grid[col][row]
+						&& end != grid[col][row]) {
 						walls.add(grid[col][row]);
 					}
 				}
 				if(endB) {
-					end = grid[col][row];
+					Spot temp = grid[col][row];
+
+					if(temp != start) {
+						end = temp;
+					}
 				}
 				if(!startB) {
 					start = grid[col][row];
@@ -290,7 +327,7 @@ public class Main extends JPanel {
 			if(SwingUtilities.isRightMouseButton(e)) {
 				walls.remove(grid[col][row]);
 			}
-			repaint();
+			run();
 		}
 	}
 

@@ -16,3 +16,4 @@
 - [ ] restart button
 - [ ] clear walls button
 - [ ] pause button
+- [x] drawable walls and draggable start and end

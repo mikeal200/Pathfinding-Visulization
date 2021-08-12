@@ -105,14 +105,16 @@ public class Main extends JPanel {
 				if(!paused) {
 					timer.stop();
 					paused = true;
+					pauseButton.setText("Resume");
 				}
 				else {
 					timer.start();
 					paused = false;
+					pauseButton.setText("Pause");
 				}
 			}
 			catch(Exception ex) {
-				//catch something
+				ex.printStackTrace();
 			}
 		}
 	}

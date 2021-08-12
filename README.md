@@ -14,6 +14,6 @@
 - [x] removable walls
 - [x] diagonal search
 - [ ] restart button
-- [ ] clear walls button
+- [x] clear walls button
 - [x] pause button
 - [x] drawable walls and draggable start and end

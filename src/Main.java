@@ -3,7 +3,7 @@ import java.awt.event.*;
 import java.util.ArrayList;
 import javax.swing.*;
 
-public class Main extends JPanel implements Runnable {
+public class Main extends JPanel {
 
 	public static int cols = 25;
 	public static int rows = 25;
@@ -24,11 +24,15 @@ public class Main extends JPanel implements Runnable {
 	private static boolean wallB = false;
 	private static JButton nextButton, pauseButton;
 	private static boolean chosen = false;
+	private static boolean paused = false;
 	private static Main mainPanel  = new Main();
-	private static Thread thread = new Thread(mainPanel);
+	private static Timer timer = new Timer(5,  new ActionListener() {
+		public void actionPerformed(ActionEvent ev) {
+			mainPanel.repaint();
+		}
+	});
 
 	public static void main(String[] args) {
-		thread.start();
 		JPanel container = new JPanel();
 		JPanel panel1 = new JPanel();
 		JFrame frame = new JFrame("Pathfinder");
@@ -70,6 +74,8 @@ public class Main extends JPanel implements Runnable {
 				grid[i][j].addNeighbors(grid);
 			}
 		}
+
+		timer.start();
 	}
 
 	//Create button and action listener:
@@ -94,22 +100,25 @@ public class Main extends JPanel implements Runnable {
 
 	//Action for pause button:
     public static void pauseAction(ActionEvent e) {
-		
 		if(!done) {
 			try{
-				Thread.sleep(5000);
-				//thread.suspend();
-				//thread.wait();
+				if(!paused) {
+					timer.stop();
+					paused = true;
+				}
+				else {
+					timer.start();
+					paused = false;
+				}
 			}
 			catch(Exception ex) {
-
+				//catch something
 			}
 		}
 	}
 	
 	//Action for next button:
     public static void nextAction(ActionEvent e) {
-		
 		if(!done) {
 			if(start != null && end == null) { 
 				startB = true;
@@ -126,19 +135,13 @@ public class Main extends JPanel implements Runnable {
 			else if(wallB) {
 				wallB = false;
 				chosen = true;
-				mainPanel.run();
 			}
 		}
-	}
-
-	public void run() {
-		repaint();
 	}
 	
 	public void paintComponent (Graphics g) {
 		Spot current = null;
 		super.paintComponent(g);
-		
 
 		for (int i = 0; i < cols; i++) {
 			for (int j = 0; j < rows; j++) {
@@ -173,8 +176,8 @@ public class Main extends JPanel implements Runnable {
 				//check if end of path is found
 				//make a seperate method to check
 				if(current.getX() == end.getX() && current.getY() == end.getY()) {			
-					System.out.println("done: " + path);
 					done = true;
+					timer.stop();
 				}
 
 				openSet.remove(current);
@@ -241,16 +244,11 @@ public class Main extends JPanel implements Runnable {
 				}
 			}
 
+			
 			try {
 				Thread.sleep(50);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
-			}
-
-			if(done){
-			}
-			else{
-				run();
 			}
 
 			start.draw(Color.PINK, g);
@@ -327,7 +325,6 @@ public class Main extends JPanel implements Runnable {
 			if(SwingUtilities.isRightMouseButton(e)) {
 				walls.remove(grid[col][row]);
 			}
-			run();
 		}
 	}
 

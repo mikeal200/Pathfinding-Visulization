@@ -22,7 +22,7 @@ public class Main extends JPanel {
 	private static boolean startB = false;
 	private static boolean endB = false;
 	private static boolean wallB = false;
-	private static JButton nextButton, pauseButton;
+	private static JButton nextButton, pauseButton, clearWalls;
 	private static boolean chosen = false;
 	private static boolean paused = false;
 	private static Main mainPanel  = new Main();
@@ -37,6 +37,9 @@ public class Main extends JPanel {
 		JPanel panel1 = new JPanel();
 		JFrame frame = new JFrame("Pathfinder");
 
+		clearWalls = addNewButton("Clear Walls");
+		clearWalls.setVisible(true);
+
 		pauseButton = addNewButton("Pause");
 		pauseButton.setVisible(true);
 
@@ -48,6 +51,7 @@ public class Main extends JPanel {
 		panel1.setBorder(BorderFactory.createTitledBorder("Controls"));
 		panel1.add(nextButton);
 		panel1.add(pauseButton);
+		panel1.add(clearWalls);
 
 		mainPanel.setPreferredSize(new Dimension(829, 639));
 
@@ -92,10 +96,25 @@ public class Main extends JPanel {
 				else if(bName.equals("Pause")) {
 					pauseAction(evt);
 				}
+				else if(bName.equals("Clear Walls")) {
+					clearAction(evt);
+				}
         	}
 		});
 		
         return button;
+	}
+
+	//Action for pause button:
+    public static void clearAction(ActionEvent e) {
+		if(!done) {
+			try{
+				walls.clear();
+			}
+			catch(Exception ex) {
+				ex.printStackTrace();
+			}
+		}
 	}
 
 	//Action for pause button:
@@ -137,6 +156,7 @@ public class Main extends JPanel {
 			else if(wallB) {
 				wallB = false;
 				chosen = true;
+				clearWalls.setEnabled(false);
 			}
 		}
 	}

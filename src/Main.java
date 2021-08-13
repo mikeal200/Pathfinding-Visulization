@@ -30,33 +30,57 @@ public class Main extends JPanel {
 
 	public static void main(String[] args) {
 		JPanel container = new JPanel();
-		JPanel panel1 = new JPanel();
+		JPanel controlPanel = new JPanel();
+		JPanel nextPanel = new JPanel();
+		JPanel pausePanel = new JPanel();
+		JPanel clearPanel = new JPanel();
+		JPanel restartPanel = new JPanel();
 		JFrame frame = new JFrame("Pathfinder");
 
 		restartButton = addNewButton("Restart");
 		restartButton.setVisible(true);
+		restartPanel.setLayout(new BoxLayout(restartPanel, BoxLayout.PAGE_AXIS));
+		restartButton.setAlignmentX(CENTER_ALIGNMENT);
+		restartPanel.add(Box.createRigidArea(new Dimension(0, 50)));
+		restartPanel.add(restartButton);
+		restartPanel.setBorder(BorderFactory.createTitledBorder("Restart"));
 
-		clearWalls = addNewButton("Clear Walls");
+		clearWalls = addNewButton("Clear");
 		clearWalls.setVisible(true);
+		clearPanel.setLayout(new BoxLayout(clearPanel, BoxLayout.PAGE_AXIS));
+		clearWalls.setAlignmentX(CENTER_ALIGNMENT);
+		clearPanel.add(Box.createRigidArea(new Dimension(0, 50)));
+		clearPanel.add(clearWalls);
+		clearPanel.setBorder(BorderFactory.createTitledBorder("Clear Walls"));
 
 		pauseButton = addNewButton("Pause");
 		pauseButton.setVisible(true);
+		pausePanel.setLayout(new BoxLayout(pausePanel, BoxLayout.PAGE_AXIS));
+		pauseButton.setAlignmentX(CENTER_ALIGNMENT);
+		pausePanel.add(Box.createRigidArea(new Dimension(0, 50)));
+		pausePanel.add(pauseButton, BorderLayout.CENTER);
+		pausePanel.setBorder(BorderFactory.createTitledBorder("Pause"));
 
 		nextButton = addNewButton("Next");
 		nextButton.setVisible(true);
+		nextPanel.setLayout(new BoxLayout(nextPanel, BoxLayout.PAGE_AXIS));
+		nextButton.setAlignmentX(CENTER_ALIGNMENT);
+		nextPanel.add(Box.createRigidArea(new Dimension(0, 50)));
+		nextPanel.add(nextButton, BorderLayout.CENTER);
+		nextPanel.setBorder(BorderFactory.createTitledBorder("Next"));
 
-		panel1.setPreferredSize(new Dimension(139, 639));
-		//panel1.setLayout(new GridLayout(4, 1));
-		panel1.setBorder(BorderFactory.createTitledBorder("Controls"));
-		panel1.add(nextButton);
-		panel1.add(pauseButton);
-		panel1.add(clearWalls);
-		panel1.add(restartButton);
+		controlPanel.setPreferredSize(new Dimension(139, 639));
+		controlPanel.setLayout(new GridLayout(4, 1));
+		controlPanel.setBorder(BorderFactory.createTitledBorder("Controls"));
+		controlPanel.add(nextPanel);
+		controlPanel.add(pausePanel);
+		controlPanel.add(clearPanel);
+		controlPanel.add(restartPanel);
 
 		mainPanel.setPreferredSize(new Dimension(829, 639));
 
 		container.setLayout(new BoxLayout(container, BoxLayout.X_AXIS));
-		container.add(panel1);
+		container.add(controlPanel);
 		container.add(mainPanel);
 
 		frame.getContentPane().add(new Main());
@@ -96,7 +120,7 @@ public class Main extends JPanel {
 				else if(bName.equals("Pause")) {
 					pauseAction(evt);
 				}
-				else if(bName.equals("Clear Walls")) {
+				else if(bName.equals("Clear")) {
 					clearAction(evt);
 				}
 				else if(bName.equals("Restart")) {

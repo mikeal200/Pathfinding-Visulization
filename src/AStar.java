@@ -18,9 +18,10 @@ public class AStar {
 
             //check if end of path is found
             //make a seperate method to check
-            if(current.getX() == end.getX() && current.getY() == end.getY()) {			
-                main.done = true;
-                main.timer.stop();
+            if(current.getX() == end.getX() && current.getY() == end.getY()) {		
+                Main.restartButton.setEnabled(true);	
+                Main.done = true;
+                Main.timer.stop();
             }
 
             openSet.remove(current);

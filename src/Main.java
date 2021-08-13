@@ -7,24 +7,21 @@ public class Main extends JPanel {
 
 	public static int cols = 25;
 	public static int rows = 25;
-	public static int tileWidth = 800 / cols;
-	public static int tileHeight = 600 / rows;
 	public static Spot[][] grid = new Spot[cols][rows];
 	public static ArrayList<Spot> openSet = new ArrayList<>();
 	public static ArrayList<Spot> closedSet = new ArrayList<>();
 	public static ArrayList<Spot> walls = new ArrayList<>();
 	public static boolean done = false;
-	public static int col = 0;
-	public static int row = 0;
 	public static Spot start = null;
 	public static Spot end = null;
 	private static boolean startB = false;
 	private static boolean endB = false;
 	private static boolean wallB = false;
-	private static JButton nextButton, pauseButton, clearWalls;
+	public static JButton nextButton, pauseButton, clearWalls, restartButton;
 	private static boolean chosen = false;
 	private static boolean paused = false;
 	private static Main mainPanel  = new Main();
+	private static Spot current = null;
 	public static Timer timer = new Timer(5,  new ActionListener() {
 		public void actionPerformed(ActionEvent ev) {
 			mainPanel.repaint();
@@ -35,6 +32,9 @@ public class Main extends JPanel {
 		JPanel container = new JPanel();
 		JPanel panel1 = new JPanel();
 		JFrame frame = new JFrame("Pathfinder");
+
+		restartButton = addNewButton("Restart");
+		restartButton.setVisible(true);
 
 		clearWalls = addNewButton("Clear Walls");
 		clearWalls.setVisible(true);
@@ -51,6 +51,7 @@ public class Main extends JPanel {
 		panel1.add(nextButton);
 		panel1.add(pauseButton);
 		panel1.add(clearWalls);
+		panel1.add(restartButton);
 
 		mainPanel.setPreferredSize(new Dimension(829, 639));
 
@@ -98,22 +99,52 @@ public class Main extends JPanel {
 				else if(bName.equals("Clear Walls")) {
 					clearAction(evt);
 				}
+				else if(bName.equals("Restart")) {
+					restartAction(evt);
+				}
         	}
 		});
 		
         return button;
 	}
 
+	//Action for restart button:
+    public static void restartAction(ActionEvent e) {
+		try{
+			openSet.clear();
+			closedSet.clear();
+			walls.clear();
+			AStar.path.clear();
+			current = null;
+			start = null;
+			end = null;
+			startB = false;
+			endB = false;
+			wallB = false;
+			chosen = false;
+			done = false;
+
+			//clear each spots previous property
+			//so that a new path can be found
+			//without this a memory exception occurs
+			for(int i = 0; i < cols; i++) {
+				for(int j = 0; j < rows; j++) {
+					grid[i][j].previous = null;
+				}
+			}
+
+			timer.stop();
+			timer.start();
+		}
+		catch(Exception ex) {
+			ex.printStackTrace();
+		}
+
+	}
+
 	//Action for pause button:
     public static void clearAction(ActionEvent e) {
-		if(!done) {
-			try{
-				walls.clear();
-			}
-			catch(Exception ex) {
-				ex.printStackTrace();
-			}
-		}
+		if(!done) walls.clear();
 	}
 
 	//Action for pause button:
@@ -161,7 +192,7 @@ public class Main extends JPanel {
 	}
 	
 	public void paintComponent (Graphics g) {
-		Spot current = null;
+		
 		super.paintComponent(g);
 
 		//draws base blank grid
@@ -187,6 +218,7 @@ public class Main extends JPanel {
 			}
 		}
 		else if(chosen) {
+			restartButton.setEnabled(false);
 			new AStar().search(openSet, closedSet, walls, end, current, g);
 
 			for (int i = 0; i < walls.size(); i++) {
@@ -208,10 +240,12 @@ public class Main extends JPanel {
 	//Draw method to determine what mouse button is clicked
 	//then it draws or removes spots on the grid
 	public void draw(MouseEvent e) {
+		int tileWidth = 800 / cols;
+		int tileHeight = 600 / rows;
 		int x=e.getX();
 		int y=e.getY();
-		col = x / tileWidth;
-		row = y / tileHeight;
+		int col = x / tileWidth;
+		int row = y / tileHeight;
 
 		if(!done) {
 			if(SwingUtilities.isLeftMouseButton(e)) {

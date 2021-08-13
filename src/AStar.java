@@ -26,7 +26,7 @@ public class AStar {
             openSet.remove(current);
             closedSet.add(current);
 
-            main.diagonalWallCheck(current);
+            Spot.diagonalWallCheck(current);
 
             ArrayList<Spot> neighbors = current.neighbors;
             for(int i = 0; i < neighbors.size(); i++) {

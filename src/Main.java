@@ -14,8 +14,8 @@ public class Main extends JPanel {
 	public static ArrayList<Spot> closedSet = new ArrayList<>();
 	public static ArrayList<Spot> walls = new ArrayList<>();
 	public static boolean done = false;
-	private static int col = 0;
-	private static int row = 0;
+	public static int col = 0;
+	public static int row = 0;
 	public static Spot start = null;
 	public static Spot end = null;
 	private static boolean startB = false;
@@ -193,6 +193,7 @@ public class Main extends JPanel {
 				walls.get(i).draw(Color.BLACK, g);
 			}
 
+			//sleeps to slow down the pathfiding animation
 			try {
 				Thread.sleep(50);
 			} catch (InterruptedException e) {
@@ -204,38 +205,8 @@ public class Main extends JPanel {
 		}
 	}
 
-	public static void diagonalWallCheck(Spot current) {
-		int x = current.getX();
-		int y = current.getY();
-		Spot xR = null, xL = null, yD = null, yU = null;
-
-		if(x < cols - 1) {
-			xR = grid[current.getX() + 1][current.getY()];
-		}
-		if(x > 0) {
-			xL = grid[current.getX() - 1][current.getY()];
-		}
-		if(y < rows - 1) {
-			yD = grid[current.getX()][current.getY() + 1];
-		}
-		if(y > 0) {
-			yU = grid[current.getX()][current.getY() - 1];
-		}
-		
-		if(walls.contains(xR) && walls.contains(yD)) {
-			current.removeNeighbor(grid[current.getX() + 1][current.getY() + 1]);
-		}
-		if(walls.contains(xL) && walls.contains(yU)) {
-			current.removeNeighbor(grid[current.getX() - 1][current.getY() - 1]);
-		}
-		if(walls.contains(xR) && walls.contains(yU)) {
-			current.removeNeighbor(grid[current.getX() + 1][current.getY() - 1]);
-		}
-		if(walls.contains(xL) && walls.contains(yD)) {
-			current.removeNeighbor(grid[current.getX() - 1][current.getY() + 1]);
-		}
-	}
-
+	//Draw method to determine what mouse button is clicked
+	//then it draws or removes spots on the grid
 	public void draw(MouseEvent e) {
 		int x=e.getX();
 		int y=e.getY();
@@ -262,6 +233,7 @@ public class Main extends JPanel {
 					start = grid[col][row];
 				}
 			}
+			//only removes walls
 			if(SwingUtilities.isRightMouseButton(e)) {
 				walls.remove(grid[col][row]);
 			}
@@ -269,11 +241,13 @@ public class Main extends JPanel {
 	}
 
 	public Main() {
+		//Motion listener for a single click
 		addMouseListener(new MouseAdapter() {
 			public void mousePressed(MouseEvent e) {
 				draw(e);
 			}
 		});
+		//Motion listener for a click and drag
 		addMouseMotionListener(new MouseAdapter() {
 			public void mouseDragged(MouseEvent e) {
 				draw(e);

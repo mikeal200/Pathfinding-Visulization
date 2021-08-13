@@ -9,6 +9,8 @@ public class Spot {
     public Spot previous;
     private int width = 800 / Main.cols;
     private int height = 600 / Main.rows;
+    private static int cols = Main.cols;
+    private static int rows = Main.rows;
 
     public Spot(int i, int j) {
         this.x = i;
@@ -46,29 +48,63 @@ public class Spot {
     }
 
     public void addNeighbors(Spot[][] grid) {
-        if(x < Main.cols - 1) {
+        if(x < cols - 1) {
             this.neighbors.add(grid[this.x + 1][this.y]);
         }
         if(x > 0) {
             this.neighbors.add(grid[this.x - 1][this.y]);
         }
-        if(y < Main.rows - 1) {
+        if(y < rows - 1) {
             this.neighbors.add(grid[this.x][this.y + 1]);
         }
         if(y > 0) {
             this.neighbors.add(grid[this.x][this.y - 1]);
         }
-        if(x < Main.cols - 1 && y < Main.rows - 1) {
+        if(x < cols - 1 && y < rows - 1) {
             this.neighbors.add(grid[this.x + 1][this.y + 1]);
         }
         if(x > 0 && y > 0) {
             this.neighbors.add(grid[this.x - 1][this.y - 1]);
         }
-        if(x > 0 && y < Main.rows - 1) {
+        if(x > 0 && y < rows - 1) {
             this.neighbors.add(grid[this.x - 1][this.y + 1]);
         }
-        if(x < Main.cols - 1 && y > 0) {
+        if(x < cols - 1 && y > 0) {
             this.neighbors.add(grid[this.x + 1][this.y - 1]);
         }
     }
+
+    public static void diagonalWallCheck(Spot current) {
+		int x = current.getX();
+		int y = current.getY();
+        Spot xR = null, xL = null, yD = null, yU = null;
+        Spot[][] grid = Main.grid;
+        ArrayList<Spot> walls = Main.walls;
+
+		if(x < cols - 1) {
+			xR = grid[x + 1][y];
+		}
+		if(x > 0) {
+			xL = grid[x - 1][y];
+		}
+		if(y < rows - 1) {
+			yD = grid[x][y + 1];
+		}
+		if(y > 0) {
+			yU = grid[x][y - 1];
+		}
+		
+		if(walls.contains(xR) && walls.contains(yD)) {
+			current.removeNeighbor(grid[x + 1][y + 1]);
+		}
+		if(walls.contains(xL) && walls.contains(yU)) {
+			current.removeNeighbor(grid[x - 1][y - 1]);
+		}
+		if(walls.contains(xR) && walls.contains(yU)) {
+			current.removeNeighbor(grid[x + 1][y - 1]);
+		}
+		if(walls.contains(xL) && walls.contains(yD)) {
+			current.removeNeighbor(grid[x - 1][y + 1]);
+		}
+	}
 }

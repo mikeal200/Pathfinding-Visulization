@@ -13,6 +13,7 @@
 - [x] user defined walls
 - [x] removable walls
 - [x] diagonal search
-- [ ] restart button
-- [ ] clear walls button
-- [ ] pause button
+- [x] restart button
+- [x] clear walls button
+- [x] pause button
+- [x] drawable walls and draggable start and end
